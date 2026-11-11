@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Recuerdos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap');
+
+        :root {
+            --bg-pastel: #fff5f8;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --pink-soft: #ffb7c5;
+            --pink-deep: #ff85a1;
+            --yellow-cute: #ffeed7;
+            --purple-cute: #e8dff5;
+            --text-main: #6c5b7b;
+            --text-muted: #9c8cb9;
+            --border-soft: #f7d6e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', 'Fredoka', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-pastel);
+            background-image: 
+                radial-gradient(#ffc2d1 1px, transparent 1px), 
+                radial-gradient(#ffc2d1 1px, var(--bg-pastel) 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text-main);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            animation: floatUp 1.2s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--dx), -80px) scale(1.4); opacity: 0; }
+        }
+
+        header {
+            text-align: center;
+            padding: 35px 25px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(255, 183, 197, 0.3);
+            margin-bottom: 25px;
+            border: 3px solid var(--border-soft);
+            backdrop-filter: blur(5px);
+        }
+
+        .avatar-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--pink-soft);
+            box-shadow: 0 5px 15px rgba(255, 133, 161, 0.3);
+            cursor: pointer;
+            background-color: var(--yellow-cute);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .avatar-container:hover {
+            transform: scale(1.08) rotate(3deg);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 10px;
+            font-weight: 700;
+        }
+
+        #avatar-input { display: none; }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.3rem;
+            color: var(--pink-deep);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px #fff;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .counter-box {
+            background: linear-gradient(135deg, #fff0f3 0%, #ffeed7 100%);
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 25px;
+            border: 2px dashed var(--pink-soft);
+            font-weight: 700;
+            color: var(--pink-deep);
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        nav button {
+            background: var(--card-bg);
+            border: 2px solid var(--border-soft);
+            padding: 12px 28px;
+            border-radius: 25px;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        nav button.active, nav button:hover {
+            background: var(--pink-soft);
+            color: white;
+            border-color: var(--pink-deep);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 133, 161, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 30px;
+            border: 3px solid var(--border-soft);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .tab-content.active { display: block; }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .calendar-header button {
+            background: var(--purple-cute);
+            border: none;
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .day-name {
+            font-weight: 700;
+            color: var(--pink-deep);
+            font-size: 0.95rem;
+            padding-bottom: 10px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border-radius: 20px;
+            border: 2px solid var(--border-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.2s ease;
+            position: relative;
+            font-weight: 700;
+        }
+
+        .day-cell:hover {
+            background: var(--yellow-cute);
+            transform: scale(1.05);
+        }
+
+        .day-cell.has-memory::after {
+            content: '🌸';
+            font-size: 12px;
+            position: absolute;
+            bottom: 4px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 30px 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 1px solid var(--border-soft);
+            position: relative;
+        }
+
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 15px;
+            background: rgba(255, 183, 197, 0.5);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .polaroid p {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .entry-card {
+            background: #fff;
+            border-left: 6px solid var(--pink-soft);
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .entry-date {
+            font-size: 0.85rem;
+            color: var(--pink-deep);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .entry-text {
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(108, 91, 123, 0.3);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            max-width: 440px;
+            width: 90%;
+            border: 3px solid var(--border-soft);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .modal-content h3 {
+            color: var(--pink-deep);
+            margin-bottom: 15px;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            height: 110px;
+            margin: 12px 0;
+            padding: 12px;
+            border: 2px solid var(--border-soft);
+            border-radius: 15px;
+            resize: none;
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        button.btn-sec {
+            background: var(--purple-cute);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        button.btn-primary {
+            background: var(--pink-soft);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        button.btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="avatar-container" onclick="document.getElementById('avatar-input').click();">
+            <img id="avatar-img" src="" alt="Foto" style="display:none;">
+            <span id="avatar-text" class="avatar-placeholder">Click para foto </span>
+        </div>
+        <input type="file" id="avatar-input" accept="image/*" onchange="loadAvatar(event)">
+        
+        <h1>Bienvenido</h1>
+        <p class="subtitle">Creé esta página para guardar nuestros momentos y cosas bonitas, jeje </p>
+        
+        <div class="counter-box">
+            Llevamos <span id="days-count">0</span> días juntos 💕
+        </div>
+    </header>
+
+    <nav>
+        <button id="btn-calendar" class="active" onclick="switchTab('calendar')">Calendario </button>
+        <button id="btn-gallery" onclick="switchTab('gallery')">Galería </button>
+        <button id="btn-diary" onclick="switchTab('diary')">Diario </button>
+    </nav>
+
+    <main>
+        <section id="calendar" class="tab-content active">
+            <div class="calendar-header">
+                <button onclick="changeMonth(-1)">&lt;</button>
+                <h2 id="month-year-title" style="color: var(--pink-deep); font-family: 'Fredoka';"></h2>
+                <button onclick="changeMonth(1)">&gt;</button>
+            </div>
+            <div class="calendar-grid" id="calendar-grid"></div>
+        </section>
+
+        <section id="gallery" class="tab-content">
+            <div class="gallery-grid" id="gallery-grid"></div>
+        </section>
+
+        <section id="diary" class="tab-content">
+            <div id="diary-list"></div>
+        </section>
+    </main>
+
+    <div class="modal" id="memory-modal">
+        <div class="modal-content">
+            <h3 id="modal-date"></h3>
+            <textarea id="memory-text" placeholder="Escribe algo lindo sobre este día..."></textarea>
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">Añadir una foto especial:</label><br>
+            <input type="file" id="memory-photo" accept="image/*" style="margin-top: 8px;">
+            <div class="modal-buttons">
+                <button class="btn-sec" onclick="closeModal()">Cancelar</button>
+                <button id="btn-save-memory" class="btn-primary" onclick="saveMemory()">Guardar ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Firebase y Cloudinary -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEXmGFD2EujDcTs9eTdo_Gk7F-OS4k4R8",
+            authDomain: "nuestrosrecuerdos.firebaseapp.com",
+            projectId: "nuestrosrecuerdos",
+            storageBucket: "nuestrosrecuerdos.firebasestorage.app",
+            messagingSenderId: "373893131445",
+            appId: "1:373893131445:web:7be4a3e32a940c3fd0e2fc"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Datos de tu cuenta de Cloudinary
+        const CLOUD_NAME = "rkcnkp1d";
+        const UPLOAD_PRESET = "ml_default";
+
+        let memories = {};
+        let currentDate = new Date();
+        let selectedDateKey = '';
+
+        // Efecto corazones
+        document.addEventListener('click', (e) => {
+            const particle = document.createElement('div');
+            particle.className = 'heart-particle';
+            const items = ['💖', '🌸', '✨', '💕', '🌷'];
+            particle.innerText = items[Math.floor(Math.random() * items.length)];
+            particle.style.left = e.clientX + 'px';
+            particle.style.top = e.clientY + 'px';
+            particle.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 1200);
+        });
+
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 2);
+
+        function updateCounter() {
+            const now = new Date();
+            const diffTime = Math.abs(now - startDate);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('days-count').innerText = diffDays;
+        }
+
+        window.onload = async function() {
+            updateCounter();
+            const savedAvatar = localStorage.getItem('userAvatar');
+            if(savedAvatar) {
+                const img = document.getElementById('avatar-img');
+                img.src = savedAvatar;
+                img.style.display = 'block';
+                document.getElementById('avatar-text').style.display = 'none';
+            }
+            await loadMemoriesFromFirebase();
+        };
+
+        async function loadMemoriesFromFirebase() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "memories"));
+                memories = {};
+                querySnapshot.forEach((doc) => {
+                    memories[doc.id] = doc.data();
+                });
+                renderCalendar();
+                renderGallery();
+                renderDiary();
+            } catch (e) {
+                console.error("Error al cargar de Firebase: ", e);
+            }
+        }
+
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        window.renderCalendar = function() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            days.forEach(d => {
+                grid.innerHTML += `<div class="day-name">${d}</div>`;
+            });
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            document.getElementById('month-year-title').innerText = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+
+            for(let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            for(let day = 1; day <= lastDate; day++) {
+                const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const hasMem = (memories[dateKey] && (memories[dateKey].text || memories[dateKey].image)) ? 'has-memory' : '';
+                grid.innerHTML += `
+                    <div class="day-cell ${hasMem}" onclick="openModal('${dateKey}')">
+                        ${day}
+                    </div>`;
+            }
+        }
+
+        window.changeMonth = function(offset) {
+            currentDate.setMonth(currentDate.getMonth() + offset);
+            renderCalendar();
+        }
+
+        window.openModal = function(dateKey) {
+            selectedDateKey = dateKey;
+            document.getElementById('modal-date').innerText = `Recuerdo: ${dateKey}`;
+            document.getElementById('memory-text').value = memories[dateKey]?.text || '';
+            document.getElementById('memory-photo').value = '';
+            document.getElementById('memory-modal').style.display = 'flex';
+        }
+
+        window.closeModal = function() {
+            document.getElementById('memory-modal').style.display = 'none';
+        }
+
+        window.saveMemory = async function() {
+            const text = document.getElementById('memory-text').value;
+            const photoInput = document.getElementById('memory-photo');
+            const saveBtn = document.getElementById('btn-save-memory');
+            
+            if(!memories[selectedDateKey]) {
+                memories[selectedDateKey] = {};
+            }
+            memories[selectedDateKey].text = text;
+
+            // Si se seleccionó una foto, la subimos a Cloudinary primero
+            if(photoInput.files && photoInput.files[0]) {
+                saveBtn.innerText = "Subiendo foto... ⏳";
+                saveBtn.disabled = true;
+
+                const formData = new FormData();
+                formData.append("file", photoInput.files[0]);
+                formData.append("upload_preset", UPLOAD_PRESET);
+
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                        method: "POST",
+                        body: formData
+                    });
+                    const data = await res.json();
+
+                    if(data.secure_url) {
+                        memories[selectedDateKey].image = data.secure_url;
+                    } else {
+                        alert("Error subiendo la imagen a Cloudinary");
+                        saveBtn.innerText = "Guardar ";
+                        saveBtn.disabled = false;
+                        return;
+                    }
+                } catch(e) {
+                    console.error("Error en Cloudinary: ", e);
+                    alert("No se pudo subir la foto.");
+                    saveBtn.innerText = "Guardar ";
+                    saveBtn.disabled = false;
+                    return;
+                }
+            }
+
+            // Guardar en Firestore la URL y el texto
+            await saveToFirestore(selectedDateKey, memories[selectedDateKey]);
+            saveBtn.innerText = "Guardar ✨";
+            saveBtn.disabled = false;
+        }
+
+        async function saveToFirestore(dateKey, data) {
+            try {
+                await setDoc(doc(db, "memories", dateKey), data);
+                closeModal();
+                renderCalendar();
+                renderGallery();
+                renderDiary();
+            } catch (e) {
+                console.error("Error al guardar: ", e);
+                alert("Hubo un error al guardar en la base de datos.");
+            }
+        }
+
+        window.renderGallery = function() {
+            const container = document.getElementById('gallery-grid');
+            container.innerHTML = '';
+            let count = 0;
+            Object.keys(memories).forEach(date => {
+                if(memories[date].image) {
+                    count++;
+                    container.innerHTML += `
+                        <div class="polaroid">
+                            <img src="${memories[date].image}" alt="Recuerdo">
+                            <p>${date}</p>
+                        </div>`;
+                }
+            });
+            if(count === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Aún no hay fotos guardadas ✨</p>`;
+            }
+        }
+
+        window.renderDiary = function() {
+            const container = document.getElementById('diary-list');
+            container.innerHTML = '';
+            const sortedDates = Object.keys(memories).sort().reverse();
+            let count = 0;
+
+            sortedDates.forEach(date => {
+                if(memories[date].text) {
+                    count++;
+                    container.innerHTML += `
+                        <div class="entry-card">
+                            <div class="entry-date">🗓️ ${date}</div>
+                            <div class="entry-text">${memories[date].text}</div>
+                        </div>`;
+                }
+            });
+
+            if(count === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted);">Aún no hay notas en el diario ✨</p>`;
+            }
+        }
+
+        window.loadAvatar = function(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const img = document.getElementById('avatar-img');
+                img.src = reader.result;
+                img.style.display = 'block';
+                document.getElementById('avatar-text').style.display = 'none';
+                localStorage.setItem('userAvatar', reader.result);
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>
