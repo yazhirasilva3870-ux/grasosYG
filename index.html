@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestros Recuerdos</title>
+    <title>Nuestros Recuerdos 💕</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap');
 
@@ -65,10 +65,18 @@
             backdrop-filter: blur(5px);
         }
 
+        /* Contenedor doble de Avatares */
+        .avatars-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
         .avatar-container {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 15px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid var(--pink-soft);
@@ -92,14 +100,24 @@
         }
 
         .avatar-placeholder {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             text-align: center;
-            padding: 10px;
+            padding: 5px;
             font-weight: 700;
         }
 
-        #avatar-input { display: none; }
+        .heart-divider {
+            font-size: 1.6rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .avatar-input-hidden { display: none; }
 
         h1 {
             font-family: 'Fredoka', sans-serif;
@@ -303,7 +321,7 @@
             background: white;
             padding: 30px;
             border-radius: 30px;
-            max-width: 440px;
+            max-width: 460px;
             width: 90%;
             border: 3px solid var(--border-soft);
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -317,8 +335,8 @@
 
         .modal-content textarea {
             width: 100%;
-            height: 110px;
-            margin: 12px 0;
+            height: 100px;
+            margin: 10px 0;
             padding: 12px;
             border: 2px solid var(--border-soft);
             border-radius: 15px;
@@ -326,11 +344,33 @@
             outline: none;
         }
 
+        .photos-inputs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .photo-input-group {
+            background: var(--bg-pastel);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px dashed var(--pink-soft);
+        }
+
+        .photo-input-group label {
+            font-size: 0.8rem;
+            color: var(--pink-deep);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+
         .modal-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
-            margin-top: 15px;
+            margin-top: 18px;
         }
 
         button.btn-sec {
@@ -362,11 +402,21 @@
 <body>
 
     <header>
-        <div class="avatar-container" onclick="document.getElementById('avatar-input').click();">
-            <img id="avatar-img" src="" alt="Foto" style="display:none;">
-            <span id="avatar-text" class="avatar-placeholder">Click para foto </span>
+        <!-- Dos espacios de fotos de perfil -->
+        <div class="avatars-wrapper">
+            <div class="avatar-container" onclick="document.getElementById('avatar-input-1').click();">
+                <img id="avatar-img-1" src="" alt="Foto 1" style="display:none;">
+                <span id="avatar-text-1" class="avatar-placeholder">Tú ✨</span>
+            </div>
+            <span class="heart-divider">💕</span>
+            <div class="avatar-container" onclick="document.getElementById('avatar-input-2').click();">
+                <img id="avatar-img-2" src="" alt="Foto 2" style="display:none;">
+                <span id="avatar-text-2" class="avatar-placeholder">Tu pareja </span>
+            </div>
         </div>
-        <input type="file" id="avatar-input" accept="image/*" onchange="loadAvatar(event)">
+
+        <input type="file" id="avatar-input-1" class="avatar-input-hidden" accept="image/*" onchange="loadAvatar(event, 1)">
+        <input type="file" id="avatar-input-2" class="avatar-input-hidden" accept="image/*" onchange="loadAvatar(event, 2)">
         
         <h1>Bienvenido</h1>
         <p class="subtitle">Creé esta página para guardar nuestros momentos y cosas bonitas, jeje </p>
@@ -377,9 +427,9 @@
     </header>
 
     <nav>
-        <button id="btn-calendar" class="active" onclick="switchTab('calendar')">Calendario </button>
-        <button id="btn-gallery" onclick="switchTab('gallery')">Galería </button>
-        <button id="btn-diary" onclick="switchTab('diary')">Diario </button>
+        <button id="btn-calendar" class="active" onclick="switchTab('calendar')">Calendario 📅</button>
+        <button id="btn-gallery" onclick="switchTab('gallery')">Galería 🖼️</button>
+        <button id="btn-diary" onclick="switchTab('diary')">Diario 📖</button>
     </nav>
 
     <main>
@@ -401,12 +451,23 @@
         </section>
     </main>
 
+    <!-- Modal con 2 espacios para fotos -->
     <div class="modal" id="memory-modal">
         <div class="modal-content">
             <h3 id="modal-date"></h3>
             <textarea id="memory-text" placeholder="Escribe algo lindo sobre este día..."></textarea>
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">Añadir una foto especial:</label><br>
-            <input type="file" id="memory-photo" accept="image/*" style="margin-top: 8px;">
+            
+            <div class="photos-inputs-container">
+                <div class="photo-input-group">
+                    <label>📸 Foto 1:</label>
+                    <input type="file" id="memory-photo-1" accept="image/*">
+                </div>
+                <div class="photo-input-group">
+                    <label>📸 Foto 2:</label>
+                    <input type="file" id="memory-photo-2" accept="image/*">
+                </div>
+            </div>
+
             <div class="modal-buttons">
                 <button class="btn-sec" onclick="closeModal()">Cancelar</button>
                 <button id="btn-save-memory" class="btn-primary" onclick="saveMemory()">Guardar ✨</button>
@@ -431,7 +492,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Datos de tu cuenta de Cloudinary
+        // Configuración Cloudinary
         const CLOUD_NAME = "rkcnkp1d";
         const UPLOAD_PRESET = "ml_default";
 
@@ -464,13 +525,18 @@
 
         window.onload = async function() {
             updateCounter();
-            const savedAvatar = localStorage.getItem('userAvatar');
-            if(savedAvatar) {
-                const img = document.getElementById('avatar-img');
-                img.src = savedAvatar;
-                img.style.display = 'block';
-                document.getElementById('avatar-text').style.display = 'none';
-            }
+            
+            // Cargar Avatares guardados
+            [1, 2].forEach(num => {
+                const savedAvatar = localStorage.getItem(`userAvatar_${num}`);
+                if(savedAvatar) {
+                    const img = document.getElementById(`avatar-img-${num}`);
+                    img.src = savedAvatar;
+                    img.style.display = 'block';
+                    document.getElementById(`avatar-text-${num}`).style.display = 'none';
+                }
+            });
+
             await loadMemoriesFromFirebase();
         };
 
@@ -519,7 +585,7 @@
 
             for(let day = 1; day <= lastDate; day++) {
                 const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                const hasMem = (memories[dateKey] && (memories[dateKey].text || memories[dateKey].image)) ? 'has-memory' : '';
+                const hasMem = (memories[dateKey] && (memories[dateKey].text || memories[dateKey].image || memories[dateKey].image2)) ? 'has-memory' : '';
                 grid.innerHTML += `
                     <div class="day-cell ${hasMem}" onclick="openModal('${dateKey}')">
                         ${day}
@@ -536,7 +602,8 @@
             selectedDateKey = dateKey;
             document.getElementById('modal-date').innerText = `Recuerdo: ${dateKey}`;
             document.getElementById('memory-text').value = memories[dateKey]?.text || '';
-            document.getElementById('memory-photo').value = '';
+            document.getElementById('memory-photo-1').value = '';
+            document.getElementById('memory-photo-2').value = '';
             document.getElementById('memory-modal').style.display = 'flex';
         }
 
@@ -544,9 +611,24 @@
             document.getElementById('memory-modal').style.display = 'none';
         }
 
+        // Subir imagen auxiliar a Cloudinary
+        async function uploadToCloudinary(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+            return data.secure_url || null;
+        }
+
         window.saveMemory = async function() {
             const text = document.getElementById('memory-text').value;
-            const photoInput = document.getElementById('memory-photo');
+            const photoInput1 = document.getElementById('memory-photo-1');
+            const photoInput2 = document.getElementById('memory-photo-2');
             const saveBtn = document.getElementById('btn-save-memory');
             
             if(!memories[selectedDateKey]) {
@@ -554,40 +636,33 @@
             }
             memories[selectedDateKey].text = text;
 
-            // Si se seleccionó una foto, la subimos a Cloudinary primero
-            if(photoInput.files && photoInput.files[0]) {
-                saveBtn.innerText = "Subiendo foto... ⏳";
+            const hasPhoto1 = photoInput1.files && photoInput1.files[0];
+            const hasPhoto2 = photoInput2.files && photoInput2.files[0];
+
+            if (hasPhoto1 || hasPhoto2) {
+                saveBtn.innerText = "Subiendo fotos... ⏳";
                 saveBtn.disabled = true;
 
-                const formData = new FormData();
-                formData.append("file", photoInput.files[0]);
-                formData.append("upload_preset", UPLOAD_PRESET);
-
                 try {
-                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-                        method: "POST",
-                        body: formData
-                    });
-                    const data = await res.json();
+                    if (hasPhoto1) {
+                        const url1 = await uploadToCloudinary(photoInput1.files[0]);
+                        if (url1) memories[selectedDateKey].image = url1;
+                    }
 
-                    if(data.secure_url) {
-                        memories[selectedDateKey].image = data.secure_url;
-                    } else {
-                        alert("Error subiendo la imagen a Cloudinary");
-                        saveBtn.innerText = "Guardar ";
-                        saveBtn.disabled = false;
-                        return;
+                    if (hasPhoto2) {
+                        const url2 = await uploadToCloudinary(photoInput2.files[0]);
+                        if (url2) memories[selectedDateKey].image2 = url2;
                     }
                 } catch(e) {
                     console.error("Error en Cloudinary: ", e);
-                    alert("No se pudo subir la foto.");
+                    alert("Ocurrió un error al subir las fotos.");
                     saveBtn.innerText = "Guardar ";
                     saveBtn.disabled = false;
                     return;
                 }
             }
 
-            // Guardar en Firestore la URL y el texto
+            // Guardar en Firestore
             await saveToFirestore(selectedDateKey, memories[selectedDateKey]);
             saveBtn.innerText = "Guardar ✨";
             saveBtn.disabled = false;
@@ -610,16 +685,26 @@
             const container = document.getElementById('gallery-grid');
             container.innerHTML = '';
             let count = 0;
+            
             Object.keys(memories).forEach(date => {
                 if(memories[date].image) {
                     count++;
                     container.innerHTML += `
                         <div class="polaroid">
-                            <img src="${memories[date].image}" alt="Recuerdo">
+                            <img src="${memories[date].image}" alt="Recuerdo 1">
                             <p>${date}</p>
                         </div>`;
                 }
+                if(memories[date].image2) {
+                    count++;
+                    container.innerHTML += `
+                        <div class="polaroid">
+                            <img src="${memories[date].image2}" alt="Recuerdo 2">
+                            <p>${date} (Foto 2)</p>
+                        </div>`;
+                }
             });
+            
             if(count === 0) {
                 container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Aún no hay fotos guardadas ✨</p>`;
             }
@@ -647,16 +732,20 @@
             }
         }
 
-        window.loadAvatar = function(event) {
+        // Cargar imágenes de perfil (Avatares)
+        window.loadAvatar = function(event, num) {
+            const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(){
-                const img = document.getElementById('avatar-img');
+                const img = document.getElementById(`avatar-img-${num}`);
                 img.src = reader.result;
                 img.style.display = 'block';
-                document.getElementById('avatar-text').style.display = 'none';
-                localStorage.setItem('userAvatar', reader.result);
+                document.getElementById(`avatar-text-${num}`).style.display = 'none';
+                localStorage.setItem(`userAvatar_${num}`, reader.result);
             };
-            reader.readAsDataURL(event.target.files[0]);
+            reader.readAsDataURL(file);
         }
     </script>
 </body>
